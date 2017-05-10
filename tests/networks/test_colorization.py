@@ -1,42 +1,44 @@
 import unittest
 
+import keras.backend as K
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from skimage import color
 
-from colorization import colorization, define_optimizer, lab_to_rgb, l_to_rgb
+from colorization import keras_colorization, lab_to_rgb, l_to_rgb
 
 
 class TestColorization(unittest.TestCase):
     def test_colorization(self):
-        imgs_l, imgs_true_ab, imgs_emb = self._tensors()
+        imgs_l, imgs_ab_true, imgs_emb = self._batch_tensors()
 
         # Build the network and the optimizer step
-        imgs_ab = colorization(imgs_l, imgs_emb)
-        opt_operations = define_optimizer(imgs_ab, imgs_true_ab)
+        model = keras_colorization(imgs_l, imgs_emb, imgs_ab_true)
+        print(model.summary())
 
-        self._run(imgs_l, imgs_ab, imgs_true_ab, opt_operations)
+        self._run(model, imgs_l, imgs_emb, imgs_ab_true)
 
-    def _run(self, imgs_l, imgs_ab, imgs_true_ab, opt_operations):
-        with tf.Session() as sess:
+    def _run(self, model, imgs_l, imgs_emb, imgs_ab_true):
+        sess = tf.Session()
+        K.set_session(sess)
+        with sess.as_default():
             sess.run(tf.global_variables_initializer())
 
             # Coordinate the loading of image files.
             coord = tf.train.Coordinator()
             threads = tf.train.start_queue_runners(coord=coord)
 
-            res = sess.run({
-                'imgs_l': imgs_l,
-                'imgs_ab': imgs_ab,
-                'imgs_true_ab': imgs_true_ab,
-            })
+            res = model.predict(
+                {'imgs_l': imgs_l,
+                 'imgs_emb': imgs_emb,
+                 'imgs_ab_true': imgs_ab_true})
 
-            img_gray = l_to_rgb(res['imgs_l'][0][:, :, 0])
-            img_output = lab_to_rgb(res['imgs_l'][0][:, :, 0],
-                                    res['imgs_ab'][0])
-            img_true = lab_to_rgb(res['imgs_l'][0][:, :, 0],
-                                  res['imgs_true_ab'][0])
+            img_gray = l_to_rgb(res[1][0][:, :, 0])
+            img_output = lab_to_rgb(res[1][0][:, :, 0],
+                                    res[2][0])
+            img_true = lab_to_rgb(res[1][0][:, :, 0],
+                                  res[3][0])
 
             plt.subplot(2, 3, 1)
             plt.imshow(img_gray)
@@ -51,22 +53,26 @@ class TestColorization(unittest.TestCase):
             plt.title('Target (original)')
             plt.axis('off')
 
-            for epoch in range(100):
-                print('Epoch:', epoch, end=' ')
-                res = sess.run(opt_operations)
-                print('Cost:', res['cost'])
+            model.fit({'imgs_l': imgs_l,
+                       'imgs_emb': imgs_emb,
+                       'imgs_ab_true': imgs_ab_true},
+                      {'diff': np.zeros((1, 128, 64, 2)),
+                       'imgs_l': np.zeros((1, 128, 64, 1)),
+                       'imgs_ab': np.zeros((1, 128, 64, 2)),
+                       'imgs_ab_true': np.zeros((1, 128, 64, 2))},
+                      epochs=5,
+                      batch_size=16)
 
-            res = sess.run({
-                'imgs_l': imgs_l,
-                'imgs_ab': imgs_ab,
-                'imgs_true_ab': imgs_true_ab,
-            })
+            res = model.predict(
+                {'imgs_l': imgs_l,
+                 'imgs_emb': imgs_emb,
+                 'imgs_ab_true': imgs_ab_true})
 
-            img_gray = l_to_rgb(res['imgs_l'][0][:, :, 0])
-            img_output = lab_to_rgb(res['imgs_l'][0][:, :, 0],
-                                    res['imgs_ab'][0])
-            img_true = lab_to_rgb(res['imgs_l'][0][:, :, 0],
-                                  res['imgs_true_ab'][0])
+            img_gray = l_to_rgb(res[1][0][:, :, 0])
+            img_output = lab_to_rgb(res[1][0][:, :, 0],
+                                    res[2][0])
+            img_true = lab_to_rgb(res[1][0][:, :, 0],
+                                  res[3][0])
 
             plt.subplot(2, 3, 4)
             plt.imshow(img_gray)
@@ -87,7 +93,7 @@ class TestColorization(unittest.TestCase):
             coord.request_stop()
             coord.join(threads)
 
-    def _tensors(self):
+    def _batch_tensors(self):
         # Image sizes
         width = 128
         height = 64
@@ -106,14 +112,13 @@ class TestColorization(unittest.TestCase):
         l = l.reshape([width, height, 1])
         ab /= 127
 
-        imgs_l, imgs_ab, imgs_emb = tf.train.batch([
+        imgs_l, imgs_ab_true, imgs_emb = tf.train.batch([
             tf.convert_to_tensor(l),
             tf.convert_to_tensor(ab),
             tf.truncated_normal(shape=[1001])],
-            batch_size=10
+            batch_size=32
         )
-        return imgs_l, imgs_ab, imgs_emb
-
+        return imgs_l, imgs_ab_true, imgs_emb
 
 if __name__ == '__main__':
     unittest.main()
