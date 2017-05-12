@@ -10,7 +10,7 @@ from colorization.training_utils import evaluation_pipeline, \
 run_id = 'run{}'.format(1)
 epochs = 100
 val_number_of_images = 20
-total_train_images = 1000
+total_train_images = 5000
 batch_size = 100
 learning_rate = 0.001
 
@@ -46,15 +46,16 @@ with sess.as_default():
             print('Epoch:', epoch, 'Batch:', batch, end=' ')
             res = sess.run(opt_operations)
             print('Cost:', res['cost'])
-            summary_writer.add_summary(res['summary'], epochs * epoch + batch)
+            global_step = res['global_step']
+            summary_writer.add_summary(res['summary'], global_step)
 
         # Save the variables to disk
-        save_path = saver.save(sess, checkpoint_paths, global_step=epoch)
+        save_path = saver.save(sess, checkpoint_paths, global_step)
         print("Model saved in file: %s" % save_path)
 
         # Evaluation step on validation
         res = sess.run(evaluations_ops)
-        summary_writer.add_summary(res['summary'], epochs * epoch + batch)
+        summary_writer.add_summary(res['summary'], global_step)
         plot_evaluation(res, run_id, epoch)
 
     # Finish off the filename queue coordinator.
