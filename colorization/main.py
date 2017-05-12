@@ -10,8 +10,8 @@ from colorization.training_utils import evaluation_pipeline, \
 run_id = 'run{}'.format(1)
 epochs = 10
 val_number_of_images = 20
-total_train_images = 130
-batch_size = 130
+total_train_images = 1000
+batch_size = 100
 learning_rate = 0.001
 
 # START
@@ -45,7 +45,7 @@ with sess.as_default():
         for batch in range(total_train_images // batch_size):
             print('Epoch:', epoch, 'Batch:', batch, end=' ')
             res = sess.run(opt_operations)
-            summary_writer.add_summary(res['summary'], 5 * epoch + batch)
+            summary_writer.add_summary(res['summary'], epochs * epoch + batch)
 
         # Save the variables to disk
         save_path = saver.save(sess, checkpoint_paths, global_step=epoch)

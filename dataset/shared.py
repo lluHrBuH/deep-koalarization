@@ -3,8 +3,8 @@ from os import makedirs
 from os.path import expanduser, join
 
 # Default folders
-dir_root = join(expanduser('~'), 'imagenet')
-# dir_root = join('/cfs/klemming/scratch/f/fedbal/public', 'imagenet')
+#dir_root = join(expanduser('~'), 'imagenet')
+dir_root = join('/cfs/klemming/scratch/f/fedbal/public', 'imagenet')
 dir_originals = join(dir_root, 'original')
 dir_resized = join(dir_root, 'resized')
 dir_filtered = join(dir_root, 'filtered')
