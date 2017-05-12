@@ -68,6 +68,11 @@ def evaluation_pipeline(col, number_of_images):
     }
 
 
+def print_log(content, run_id):
+    with open('output_{}.txt'.format(run_id), mode='a') as f:
+        f.write(content + '\n')
+
+
 def metrics_system(run_id, sess):
     # Merge all the summaries and set up the writers
     train_writer = tf.summary.FileWriter(join(dir_metrics, run_id), sess.graph)
