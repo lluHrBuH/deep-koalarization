@@ -8,7 +8,7 @@ from colorization.training_utils import evaluation_pipeline, \
 
 # PARAMETERS
 run_id = 'run{}'.format(1)
-epochs = 10
+epochs = 100
 val_number_of_images = 20
 total_train_images = 1000
 batch_size = 100

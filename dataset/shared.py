@@ -9,8 +9,8 @@ dir_originals = join(dir_root, 'original')
 dir_resized = join(dir_root, 'resized')
 dir_filtered = join(dir_root, 'filtered')
 dir_tfrecord = join(dir_root, 'tfrecords')
-dir_metrics = join(dir_root, 'metrics')
-dir_checkpoints = join(dir_root, 'checkpoints')
+dir_metrics = join('/afs/pdc.kth.se/home/f/fedbal/klemming/public/imagenet', 'metrics')
+dir_checkpoints = join('/afs/pdc.kth.se/home/f/fedbal/klemming/public/imagenet', 'checkpoints')
 
 
 def maybe_create_folder(folder):
