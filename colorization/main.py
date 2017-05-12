@@ -45,6 +45,7 @@ with sess.as_default():
         for batch in range(total_train_images // batch_size):
             print('Epoch:', epoch, 'Batch:', batch, end=' ')
             res = sess.run(opt_operations)
+            print('Cost:', res['cost'])
             summary_writer.add_summary(res['summary'], epochs * epoch + batch)
 
         # Save the variables to disk
@@ -53,7 +54,7 @@ with sess.as_default():
 
         # Evaluation step on validation
         res = sess.run(evaluations_ops)
-        summary_writer.add_summary(res['summary'], 5 * epoch + batch)
+        summary_writer.add_summary(res['summary'], epochs * epoch + batch)
         plot_evaluation(res, run_id, epoch)
 
     # Finish off the filename queue coordinator.
