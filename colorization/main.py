@@ -11,8 +11,9 @@ run_id = 'run{}'.format(1)
 epochs = 100
 val_number_of_images = 20
 total_train_images = 5000
-batch_size = 100
+batch_size = 500
 learning_rate = 0.001
+batches = total_train_images // batch_size
 
 # START
 sess = tf.Session()
@@ -39,19 +40,23 @@ with sess.as_default():
         print('Restoring from:', latest_checkpoint, end='')
         saver.restore(sess, latest_checkpoint)
         print('done!')
+    else:
+        print('No checkpoint found in:', checkpoint_paths)
 
     for epoch in range(epochs):
+        print('Starting epoch: {} (total images {})'
+              .format(epoch, total_train_images))
         # Training step
-        for batch in range(total_train_images // batch_size):
-            print('Epoch:', epoch, 'Batch:', batch, end=' ')
+        for batch in range(batches):
+            print(' Batch: {}/{}'.format(batch, batches), end=' ')
             res = sess.run(opt_operations)
-            print('Cost:', res['cost'])
             global_step = res['global_step']
+            print('Cost:', res['cost'], 'Global step', global_step, )
             summary_writer.add_summary(res['summary'], global_step)
 
         # Save the variables to disk
         save_path = saver.save(sess, checkpoint_paths, global_step)
-        print("Model saved in file: %s" % save_path)
+        print("Model saved in: %s" % save_path)
 
         # Evaluation step on validation
         res = sess.run(evaluations_ops)
