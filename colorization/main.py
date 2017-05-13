@@ -11,7 +11,7 @@ run_id = 'run{}'.format(1)
 epochs = 100
 val_number_of_images = 20
 total_train_images = 5000
-batch_size = 500
+batch_size = 100
 learning_rate = 0.001
 batches = total_train_images // batch_size
 
@@ -37,7 +37,7 @@ with sess.as_default():
 
     # Restore
     if latest_checkpoint is not None:
-        print_log('Restoring from: '.format(latest_checkpoint), run_id)
+        print_log('Restoring from: {}'.format(latest_checkpoint), run_id)
         saver.restore(sess, latest_checkpoint)
         print_log(' done!', run_id)
     else:
@@ -48,10 +48,10 @@ with sess.as_default():
                   .format(epoch, total_train_images), run_id)
         # Training step
         for batch in range(batches):
-            print_log(' Batch: {}/{}'.format(batch, batches), run_id)
+            print_log('Batch: {}/{}'.format(batch, batches), run_id)
             res = sess.run(opt_operations)
             global_step = res['global_step']
-            print_log(' Cost: {} Global step: {}'
+            print_log('Cost: {} Global step: {}'
                       .format(res['cost'], global_step), run_id)
             summary_writer.add_summary(res['summary'], global_step)
 
