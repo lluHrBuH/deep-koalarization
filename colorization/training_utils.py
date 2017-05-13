@@ -4,6 +4,7 @@ from os.path import join
 import matplotlib
 import numpy as np
 import tensorflow as tf
+import time
 from skimage import color
 
 from dataset.shared import dir_tfrecord, dir_metrics, dir_checkpoints, dir_root, \
@@ -70,7 +71,7 @@ def evaluation_pipeline(col, number_of_images):
 
 def print_log(content, run_id):
     with open('output_{}.txt'.format(run_id), mode='a') as f:
-        f.write(content + '\n')
+        f.write('[{}] {}\n'.format(time.strftime("%c"), content))
 
 
 def metrics_system(run_id, sess):
