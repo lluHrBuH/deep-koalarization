@@ -97,7 +97,10 @@ def plot_evaluation(res, run_id, epoch):
         img_true = lab_to_rgb(res['imgs_l'][k][:, :, 0],
                               res['imgs_true_ab'][k])
         top_5 = np.argsort(res['imgs_emb'][k])[-5:]
-        top_5 = ' / '.join(labels_to_categories[i] for i in top_5)
+        try:
+                top_5 = ' / '.join(labels_to_categories[i] for i in top_5)
+        except:
+                ptop_5 = str(top_5)
 
         plt.subplot(1, 3, 1)
         plt.imshow(img_gray)

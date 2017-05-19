@@ -10,7 +10,7 @@ from colorization.training_utils import evaluation_pipeline, \
 run_id = 'run{}'.format(1)
 epochs = 100
 val_number_of_images = 10
-total_train_images = 29*1000
+total_train_images = 40*1000
 batch_size = 100
 learning_rate = 0.001
 batches = total_train_images // batch_size
