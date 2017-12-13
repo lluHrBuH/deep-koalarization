@@ -16,7 +16,8 @@ learning_rate = 0.001
 batches = total_train_images // batch_size
 
 # START
-sess = tf.Session()
+gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.8)
+sess = tf.Session(config=gpu_options)
 K.set_session(sess)
 
 # Build the network and the various operations
