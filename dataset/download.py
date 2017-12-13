@@ -3,6 +3,7 @@ import imghdr
 import sys
 import tarfile
 import urllib
+import urllib2
 from itertools import islice
 from os.path import join, isfile
 from typing import Union, List
@@ -47,13 +48,16 @@ class ImagenetDownloader:
         if not isfile(image_path):
             try:
                 print(image_url)
-                request = urllib.urlopen(image_url)
+                request = urllib2.urlopen(image_url, timeout=1)
                 image = request.read()
                 if imghdr.what('', image) == 'jpeg':
                     with open(image_path, "wb") as f:
                         f.write(image)
+            except urllib2.URLError, e:
+                print("There was an error: %r" % e)
+                return None
             except Exception as e:
-                print('Error downloading {}: {}'.format(image_url))
+                print('Error downloading: {}'.format(image_url))
                 return None
         return image_path
 
