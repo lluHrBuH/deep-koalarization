@@ -1,1 +1,1 @@
-from colorization import evaluate
+from colorization import train
