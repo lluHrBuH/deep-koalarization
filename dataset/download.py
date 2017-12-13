@@ -48,7 +48,7 @@ class ImagenetDownloader:
         if not isfile(image_path):
             try:
                 print(image_url)
-                request = urllib2.urlopen(image_url, timeout=1)
+                request = urllib2.urlopen(image_url, timeout=2)
                 image = request.read()
                 if imghdr.what('', image) == 'jpeg':
                     with open(image_path, "wb") as f:
@@ -77,7 +77,11 @@ class ImagenetDownloader:
 
     @staticmethod
     def _encode_image_name(image_url):
-        return hashlib.md5(image_url.encode('utf-8')).hexdigest() + '.jpeg'
+        try:
+            hashed = hashlib.md5(image_url.encode('utf-8')).hexdigest() + '.jpeg'
+            return hashed
+        except:
+            return "null"
 
 
 # Run from the top folder as:
