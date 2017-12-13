@@ -14,8 +14,8 @@ from dataset.tfrecords.images_queue import queue_single_images_from_folder
 
 
 class LabImagenetBatcher:
-    def __init__(self, inputs_dir: str, records_dir: str,
-                 checkpoint_source: str):
+    def __init__(self, inputs_dir, records_dir,
+                 checkpoint_source):
         if not isdir(inputs_dir):
             raise Exception('Input folder does not exists: {}'
                             .format(inputs_dir))

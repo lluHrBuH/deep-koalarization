@@ -37,6 +37,9 @@ with sess.as_default():
         print('No checkpoint found in:', checkpoint_paths)
 
     # Evaluation (epoch=-1 to say that this is an evaluation after training)
+    print("--------------------------------")
+    print(evaluations_ops)
+    print("--------------------------------")
     res = sess.run(evaluations_ops)
     print('Cost: {}'.format(res['cost']))
     plot_evaluation(res, run_id, epoch=-1)

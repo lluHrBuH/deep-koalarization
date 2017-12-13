@@ -9,7 +9,7 @@ from dataset.shared import maybe_create_folder
 
 
 class ImagenetResizer:
-    def __init__(self, source_dir: str, dest_dir: str):
+    def __init__(self, source_dir, dest_dir):
         if not isdir(source_dir):
             raise Exception('Input folder does not exists: {}'
                             .format(source_dir))
@@ -19,7 +19,7 @@ class ImagenetResizer:
         maybe_create_folder(dest_dir)
         self.dest_dir = dest_dir
 
-    def resize_img(self, filename: str, size: Tuple[int, int] = (299, 299)):
+    def resize_img(self, filename, size = (299, 299)):
         """
         Resizes the image using padding
         :param filename:

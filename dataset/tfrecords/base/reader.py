@@ -1,4 +1,5 @@
-from abc import abstractmethod, ABC
+#py3: from abc import abstractmethod, ABC
+from abc import abstractmethod
 from os.path import join, expanduser
 
 import tensorflow as tf
@@ -6,7 +7,8 @@ import tensorflow as tf
 from .writer import compression
 
 
-class RecordReader(ABC):
+# py3: class RecordReader(ABC):
+class RecordReader(object):
     """
     A class to read examples from all the TFRecord matching a certain
     filename pattern. The implementation of the read operation is left
@@ -14,6 +16,7 @@ class RecordReader(ABC):
     a single data source is provided here.
     """
     def __init__(self, tfrecord_pattern, folder=''):
+
         # Normalize the folder and build the path
         tfrecord_pattern = join(expanduser(folder), tfrecord_pattern)
 
@@ -24,6 +27,7 @@ class RecordReader(ABC):
         reader = tf.TFRecordReader(options=compression)
         tfrecord_key, self._tfrecord_serialized = reader.read(filename_queue)
 
+        print("RecordReader __init__:", tfrecord_pattern, filename_queue)
         self._path = tfrecord_key
         self._read_operation = None
 

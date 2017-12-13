@@ -2,6 +2,11 @@ import pickle
 import time
 from os.path import join
 
+#for PyChamp debugger
+import sys
+reload(sys)  # Reload does the trick!
+sys.setdefaultencoding('UTF8')
+# end
 import matplotlib
 import numpy as np
 import tensorflow as tf
@@ -30,6 +35,7 @@ def loss_with_metrics(img_ab_out, img_ab_true, name=''):
 
 def training_pipeline(col, learning_rate, batch_size):
     # Set up training (input queues, graph, optimizer)
+
     irr = LabImageRecordReader('lab_images_*.tfrecord', dir_tfrecord)
     read_batched_examples = irr.read_batch(batch_size, shuffle=True)
     # read_batched_examples = irr.read_one()
@@ -46,7 +52,8 @@ def training_pipeline(col, learning_rate, batch_size):
         'optimizer': optimizer,
         'cost': cost,
         'summary': summary
-    }, irr, read_batched_examples
+    #}, irr, read_batched_examples
+    }, read_batched_examples
 
 
 def evaluation_pipeline(col, number_of_images):
@@ -57,6 +64,7 @@ def evaluation_pipeline(col, number_of_images):
     imgs_true_ab_val = read_batched_examples['image_ab']
     imgs_emb_val = read_batched_examples['image_embedding']
     imgs_ab_val = col.build(imgs_l_val, imgs_emb_val)
+
     cost, summary = loss_with_metrics(imgs_ab_val, imgs_true_ab_val,
                                       'validation')
     return {
@@ -138,7 +146,9 @@ def lab_to_rgb(img_l, img_ab):
     :param img_l:
     :return:
     """
-    lab = np.empty([*img_l.shape[0:2], 3])
+    x = img_l.shape[0]
+    y = img_l.shape[1]
+    lab = np.empty([x, y, 3])
     lab[:, :, 0] = np.squeeze(((img_l + 1) * 50))
     lab[:, :, 1:] = img_ab * 127
     return color.lab2rgb(lab)

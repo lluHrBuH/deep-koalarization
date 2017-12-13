@@ -2,7 +2,7 @@ import hashlib
 import imghdr
 import sys
 import tarfile
-import urllib.request
+import urllib
 from itertools import islice
 from os.path import join, isfile
 from typing import Union, List
@@ -11,7 +11,7 @@ from dataset.shared import dir_root, maybe_create_folder
 
 
 class ImagenetDownloader:
-    def __init__(self, links_source: str, dest_dir: str):
+    def __init__(self, links_source, dest_dir):
 
         # Destination folder
         maybe_create_folder(dest_dir)
@@ -19,10 +19,8 @@ class ImagenetDownloader:
 
         # If the source is a link download it
         if links_source.startswith('http://'):
-            print('Using urllib.request for the link archive is extremely',
-                  'slow, it\'s better to download the tgz archive manualy',
-                  'and pass its path to this constructor', file=sys.stderr)
-            links_source, _ = urllib.request.urlretrieve(
+            print('Using urllib.request for the link archive is extremely slow, it\'s better to download the tgz archive manualy and pass its path to this constructor')
+            links_source, _ = urllib.urlretrieve(
                 links_source,
                 join(dir_root, 'imagenet_fall11_urls.tgz'))
 
@@ -37,29 +35,29 @@ class ImagenetDownloader:
 
         self.links_source = links_source
 
-    def download_images(self, size: int = 10, skip: int = 0) -> List[str]:
+    def download_images(self, size = 10, skip = 0):
         urls = islice(self._image_urls_generator(), skip, skip + size)
         downloaded_images = map(self._download_img, urls)
         valid_images = filter(lambda x: x is not None, downloaded_images)
         return list(valid_images)
 
-    def _download_img(self, image_url: str) -> Union[str, None]:
+    def _download_img(self, image_url):
         image_name = self._encode_image_name(image_url)
         image_path = join(self.dest_dir, image_name)
         if not isfile(image_path):
             try:
-                request = urllib.request.urlopen(image_url, timeout=2)
+                print(image_url)
+                request = urllib.urlopen(image_url)
                 image = request.read()
                 if imghdr.what('', image) == 'jpeg':
                     with open(image_path, "wb") as f:
                         f.write(image)
             except Exception as e:
-                print('Error downloading {}: {}'.format(image_url, e),
-                      file=sys.stderr)
+                print('Error downloading {}: {}'.format(image_url))
                 return None
         return image_path
 
-    def _image_urls_generator(self) -> Union[str, None]:
+    def _image_urls_generator(self):
         with open(self.links_source) as sources:
             while True:
                 try:
@@ -71,10 +69,10 @@ class ImagenetDownloader:
                         # End of file
                         return
                 except UnicodeDecodeError as ue:
-                    print('Unicode error: {}'.format(ue), file=sys.stderr)
+                    print('Unicode error: {}'.format(ue))
 
     @staticmethod
-    def _encode_image_name(image_url: str) -> str:
+    def _encode_image_name(image_url):
         return hashlib.md5(image_url.encode('utf-8')).hexdigest() + '.jpeg'
 
 
@@ -88,7 +86,7 @@ if __name__ == '__main__':
 
     # Argparse setup
     parser = argparse.ArgumentParser(
-        description='Download and process images from imagenet')
+        description='Download and process images from imageneti')
     parser.add_argument('-c', '--count',
                         default=10,
                         type=int,

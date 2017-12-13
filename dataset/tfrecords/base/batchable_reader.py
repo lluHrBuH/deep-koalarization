@@ -16,6 +16,7 @@ class BatchableRecordReader(RecordReader):
     """
 
     def read_batch(self, batch_size, shuffle=False):
+        print("LETS read_batch :", batch_size)
         # Recommended configuration for these parameters (found online)
         num_threads = multiprocessing.cpu_count()
         min_after_dequeue = 10 * batch_size

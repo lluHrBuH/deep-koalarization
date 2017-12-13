@@ -2,7 +2,6 @@
 import sys
 import tarfile
 import urllib
-import urllib.request
 from os.path import join, isfile, expanduser
 
 import tensorflow as tf
@@ -22,10 +21,8 @@ def maybe_download_inception(checkpoint_source):
 
     # If the source is a link download it
     if checkpoint_source.startswith('http://'):
-        print('Using urllib.request for the checkpoint file is extremely',
-              'slow, it\'s better to download the tgz archive manualy',
-              'and pass its path to this constructor', file=sys.stderr)
-        checkpoint_source, _ = urllib.request.urlretrieve(
+        print('Using urllib.request for the checkpoint file is extremely slow, it\'s better to download the tgz archive manualy and pass its path to this constructor')
+        checkpoint_source, _ = urllib.urlretrieve(
             checkpoint_source,
             join(dir_root, 'inception_resnet_v2_2016_08_30.ckpt.tgz'))
 

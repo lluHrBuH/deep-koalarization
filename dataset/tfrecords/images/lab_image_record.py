@@ -34,6 +34,7 @@ class LabImageRecordReader(BatchableRecordReader):
     embedding_size = embedding_size
 
     def _create_read_operation(self):
+        print("LETS _create_read_operation")
         features = tf.parse_single_example(
             self._tfrecord_serialized,
             features={

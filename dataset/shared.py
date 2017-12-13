@@ -12,7 +12,10 @@ dir_checkpoints = join(dir_root, 'checkpoints')
 
 
 def maybe_create_folder(folder):
-    makedirs(folder, exist_ok=True)
+    try:
+        makedirs(folder)
+    except:
+        pass
 
 
 def progressive_filename_generator(pattern='file_{}.ext'):

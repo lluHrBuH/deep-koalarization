@@ -48,7 +48,9 @@ with sess.as_default():
                   .format(epoch, total_train_images), run_id)
         # Training step
         for batch in range(batches):
+            print("_____opt_operations____:", opt_operations)
             print_log('Batch: {}/{}'.format(batch, batches), run_id)
+            print('Batch: {}/{}'.format(batch, batches), run_id)
             res = sess.run(opt_operations)
             global_step = res['global_step']
             print_log('Cost: {} Global step: {}'
