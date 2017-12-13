@@ -54,7 +54,8 @@ with sess.as_default():
             print_log('Batch: {}/{}'.format(batch, batches), run_id)
             print('Batch: {}/{}'.format(batch, batches), run_id)
             res = sess.run(opt_operations)
-            print("res:", res)
+            print("res:", res[0])
+            res = res[0]
             global_step = res['global_step']
             print_log('Cost: {} Global step: {}'
                       .format(res['cost'], global_step), run_id)
