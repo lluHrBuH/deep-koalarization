@@ -17,7 +17,7 @@ batches = total_train_images // batch_size
 
 # START
 config = tf.ConfigProto()
-config.gpu_options.per_process_gpu_memory_fraction = 0.6
+config.gpu_options.per_process_gpu_memory_fraction = 0.7
 sess = tf.Session(config=config)
 K.set_session(sess)
 
