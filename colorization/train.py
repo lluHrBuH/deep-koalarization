@@ -6,18 +6,25 @@ from colorization.training_utils import evaluation_pipeline, \
     checkpointing_system, \
     plot_evaluation, training_pipeline, metrics_system, print_log
 
+def limit_mem():
+    K.get_session().close()
+    cfg = K.tf.ConfigProto()
+    cfg.gpu_options.allow_growth = True
+    K.set_session(K.tf.Session(config=cfg))
+
 # PARAMETERS
 run_id = 'run1'
 epochs = 100
-val_number_of_images = 1000
-total_train_images = 120*500
-batch_size = 20
+val_number_of_images = 5000
+total_train_images = 100*500
+batch_size = 100
 learning_rate = 0.001
 batches = total_train_images // batch_size
 
 # START
 config = tf.ConfigProto()
 config.gpu_options.per_process_gpu_memory_fraction = 0.8
+#config.gpu_options.allow_growth=True
 sess = tf.Session(config=config)
 K.set_session(sess)
 
@@ -49,6 +56,7 @@ with sess.as_default():
         print_log('Starting epoch: {} (total images {})'
                   .format(epoch, total_train_images), run_id)
         # Training step
+        limit_mem()
         for batch in range(batches):
             #print("_____opt_operations____:", opt_operations)
             print_log('Batch: {}/{}'.format(batch, batches), run_id)
@@ -61,6 +69,7 @@ with sess.as_default():
                       .format(res['cost'], global_step), run_id)
             summary_writer.add_summary(res['summary'], global_step)
 
+        limit_mem()
         # Save the variables to disk
         save_path = saver.save(sess, checkpoint_paths, global_step)
         print_log("Model saved in: %s" % save_path, run_id)
