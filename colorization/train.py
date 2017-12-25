@@ -10,7 +10,10 @@ def limit_mem():
     K.get_session().close()
     cfg = K.tf.ConfigProto()
     cfg.gpu_options.allow_growth = True
-    K.set_session(K.tf.Session(config=cfg))
+    sess = tf.Session(config=cfg)
+    K.set_session(sess)
+    sess.run(tf.global_variables_initializer())
+    sess.run(tf.local_variables_initializer())
 
 # PARAMETERS
 run_id = 'run1'
@@ -56,7 +59,6 @@ with sess.as_default():
         print_log('Starting epoch: {} (total images {})'
                   .format(epoch, total_train_images), run_id)
         # Training step
-        limit_mem()
         for batch in range(batches):
             #print("_____opt_operations____:", opt_operations)
             print_log('Batch: {}/{}'.format(batch, batches), run_id)
@@ -69,11 +71,11 @@ with sess.as_default():
                       .format(res['cost'], global_step), run_id)
             summary_writer.add_summary(res['summary'], global_step)
 
-        limit_mem()
+
         # Save the variables to disk
         save_path = saver.save(sess, checkpoint_paths, global_step)
         print_log("Model saved in: %s" % save_path, run_id)
-
+        limit_mem()
         # Evaluation step on validation
         res = sess.run(evaluations_ops)
         summary_writer.add_summary(res['summary'], global_step)
