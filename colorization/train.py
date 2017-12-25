@@ -11,13 +11,13 @@ run_id = 'run1'
 epochs = 100
 val_number_of_images = 3000
 total_train_images = 120*500
-batch_size = 200
+batch_size = 100
 learning_rate = 0.001
 batches = total_train_images // batch_size
 
 # START
 config = tf.ConfigProto()
-config.gpu_options.per_process_gpu_memory_fraction = 0.7
+config.gpu_options.per_process_gpu_memory_fraction = 0.9
 sess = tf.Session(config=config)
 K.set_session(sess)
 
