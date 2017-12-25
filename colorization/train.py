@@ -9,15 +9,15 @@ from colorization.training_utils import evaluation_pipeline, \
 # PARAMETERS
 run_id = 'run1'
 epochs = 100
-val_number_of_images = 10
-total_train_images = 130 * 500
+val_number_of_images = 15000
+total_train_images = 43340
 batch_size = 100
 learning_rate = 0.001
 batches = total_train_images // batch_size
 
 # START
 config = tf.ConfigProto()
-config.gpu_options.per_process_gpu_memory_fraction = 0.3
+config.gpu_options.per_process_gpu_memory_fraction = 0.6
 sess = tf.Session(config=config)
 K.set_session(sess)
 
