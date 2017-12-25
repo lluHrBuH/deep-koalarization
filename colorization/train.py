@@ -11,7 +11,7 @@ run_id = 'run1'
 epochs = 100
 val_number_of_images = 3000
 total_train_images = 120*500
-batch_size = 50
+batch_size = 200
 learning_rate = 0.001
 batches = total_train_images // batch_size
 
