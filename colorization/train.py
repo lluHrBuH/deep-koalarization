@@ -11,7 +11,7 @@ run_id = 'run1'
 epochs = 100
 val_number_of_images = 3000
 total_train_images = 120*500
-batch_size = 50
+batch_size = 20
 learning_rate = 0.001
 batches = total_train_images // batch_size
 
@@ -50,7 +50,7 @@ with sess.as_default():
                   .format(epoch, total_train_images), run_id)
         # Training step
         for batch in range(batches):
-            print("_____opt_operations____:", opt_operations)
+            #print("_____opt_operations____:", opt_operations)
             print_log('Batch: {}/{}'.format(batch, batches), run_id)
             print('Batch: {}/{}'.format(batch, batches), run_id)
             res = sess.run(opt_operations)
