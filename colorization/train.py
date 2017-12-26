@@ -8,7 +8,7 @@ from colorization.training_utils import evaluation_pipeline, \
 
 def limit_mem():
     K.get_session().close()
-    cfg = K.tf.ConfigProto()
+    cfg = tf.ConfigProto()
     cfg.gpu_options.allow_growth = True
     sess = tf.Session(config=cfg)
     K.set_session(sess)
@@ -34,8 +34,8 @@ batches = total_train_images // batch_size
 
 # START
 config = tf.ConfigProto()
-config.gpu_options.per_process_gpu_memory_fraction = 0.8
-#config.gpu_options.allow_growth=True
+config.gpu_options.per_process_gpu_memory_fraction = 0.7
+config.gpu_options.allow_growth=True
 sess = tf.Session(config=config)
 K.set_session(sess)
 
