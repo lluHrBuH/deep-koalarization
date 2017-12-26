@@ -72,7 +72,7 @@ with sess.as_default():
 #        summary_writer.add_summary(res['summary'], global_step)
 #        plot_evaluation(res, run_id, epoch)
         accuracies = []
-        for batch in range(15):
+        for batch in range(150):
             accuracies.append(sess.run(evaluations_ops)['cost'])
         print("accuracies:", accuracies)
         accuracy = np.mean(accuracies)
