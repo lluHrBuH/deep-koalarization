@@ -6,27 +6,11 @@ from colorization.training_utils import evaluation_pipeline, \
     checkpointing_system, \
     plot_evaluation, training_pipeline, metrics_system, print_log
 
-def limit_mem():
-    K.get_session().close()
-    cfg = tf.ConfigProto()
-    cfg.gpu_options.allow_growth = True
-    sess = tf.Session(config=cfg)
-    K.set_session(sess)
-    sess.run(tf.global_variables_initializer())
-    sess.run(tf.local_variables_initializer())
-    saver, checkpoint_paths, latest_checkpoint = checkpointing_system(run_id)
-    if latest_checkpoint is not None:
-        print_log('Restoring from: {}'.format(latest_checkpoint), run_id)
-        saver.restore(sess, latest_checkpoint)
-        print_log(' done!', run_id)
-    else:
-        print_log('No checkpoint found in: {}'.format(checkpoint_paths), run_id)
-
 
 # PARAMETERS
 run_id = 'run1'
 epochs = 100
-val_number_of_images = 300
+val_number_of_images = 100
 total_train_images = 100*500
 batch_size = 100
 learning_rate = 0.001
@@ -35,7 +19,7 @@ batches = total_train_images // batch_size
 # START
 config = tf.ConfigProto()
 config.gpu_options.per_process_gpu_memory_fraction = 0.7
-config.gpu_options.allow_growth=True
+#config.gpu_options.allow_growth=True
 sess = tf.Session(config=config)
 K.set_session(sess)
 
