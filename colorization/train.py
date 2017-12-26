@@ -73,7 +73,7 @@ with sess.as_default():
 #        plot_evaluation(res, run_id, epoch)
         accuracies = []
         for batch in range(30):
-            accuracies.append(sess.run(evaluations_ops))
+            accuracies.append(sess.run(evaluations_ops)['cost'])
         print("accuracies:", accuracies)
         accuracy = np.mean(accuracies)
         summary = tf.Summary()
