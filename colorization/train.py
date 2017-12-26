@@ -1,6 +1,6 @@
 import tensorflow as tf
 from keras import backend as K
-
+import numpy as np
 from colorization import Colorization
 from colorization.training_utils import evaluation_pipeline, \
     checkpointing_system, \
@@ -68,9 +68,18 @@ with sess.as_default():
         save_path = saver.save(sess, checkpoint_paths, global_step)
         print_log("Model saved in: %s" % save_path, run_id)
         # Evaluation step on validation
-        res = sess.run(evaluations_ops)
-        summary_writer.add_summary(res['summary'], global_step)
-        plot_evaluation(res, run_id, epoch)
+#        res = sess.run(evaluations_ops)
+#        summary_writer.add_summary(res['summary'], global_step)
+#        plot_evaluation(res, run_id, epoch)
+        accuracies = []
+        for batch in range(30):
+            accuracies.append(sess.run(evaluations_ops))
+        print("accuracies:", accuracies)
+        accuracy = np.mean(accuracies)
+        summary = tf.Summary()
+        summary.value.add(tag="Accuracy", simple_value=accuracy)
+        summary_writer.add_summary(summary, global_step)
+
 
     # Finish off the filename queue coordinator.
     coord.request_stop()
