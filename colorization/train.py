@@ -14,11 +14,19 @@ def limit_mem():
     K.set_session(sess)
     sess.run(tf.global_variables_initializer())
     sess.run(tf.local_variables_initializer())
+    saver, checkpoint_paths, latest_checkpoint = checkpointing_system(run_id)
+    if latest_checkpoint is not None:
+        print_log('Restoring from: {}'.format(latest_checkpoint), run_id)
+        saver.restore(sess, latest_checkpoint)
+        print_log(' done!', run_id)
+    else:
+        print_log('No checkpoint found in: {}'.format(checkpoint_paths), run_id)
+
 
 # PARAMETERS
 run_id = 'run1'
 epochs = 100
-val_number_of_images = 5000
+val_number_of_images = 300
 total_train_images = 100*500
 batch_size = 100
 learning_rate = 0.001
