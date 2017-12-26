@@ -67,7 +67,6 @@ with sess.as_default():
         # Save the variables to disk
         save_path = saver.save(sess, checkpoint_paths, global_step)
         print_log("Model saved in: %s" % save_path, run_id)
-        limit_mem()
         # Evaluation step on validation
         res = sess.run(evaluations_ops)
         summary_writer.add_summary(res['summary'], global_step)
